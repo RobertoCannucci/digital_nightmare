@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraRotation : MonoBehaviour
@@ -8,18 +9,23 @@ public class CameraRotation : MonoBehaviour
 		get { return sensitivity; }
 		set { sensitivity = value; }
 	}
-    
+	private Animator playerAnimator;
 	float sensitivity = 2f;
-    float yRotationLimit = 88f;
+    float yRotationLimit = 46.5f;
 
 	Vector2 rotation = Vector2.zero;
 	const string xAxis = "Mouse X"; //Strings in direct code generate garbage, storing and re-using them creates no garbage
 	const string yAxis = "Mouse Y";
 
-	void Update(){
-		rotation.x += Input.GetAxis(xAxis) * sensitivity;
+    private void Start()
+    {
+        playerAnimator = GameObject.FindGameObjectWithTag("Player").GetComponent<Animator>();
+    }
+    void Update(){
+		transform.position = playerAnimator.GetBoneTransform(HumanBodyBones.Head).position;
+		//rotation.x += Input.GetAxis(xAxis) * sensitivity;
 		rotation.y += Input.GetAxis(yAxis) * sensitivity;
-		rotation.y = Mathf.Clamp(rotation.y, -yRotationLimit, yRotationLimit);
+		rotation.y = Mathf.Clamp(rotation.y, -yRotationLimit, 90);
 		var xQuat = Quaternion.AngleAxis(rotation.x, Vector3.up);
 		var yQuat = Quaternion.AngleAxis(rotation.y, Vector3.left);
 

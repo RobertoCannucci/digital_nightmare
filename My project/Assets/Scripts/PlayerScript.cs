@@ -25,7 +25,7 @@ public class PlayerScript : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
-        //UpdateRotation();
+        UpdateRotation();
         ProcessMovement();
         if (Input.GetKeyUp(KeyCode.Escape))
         {
@@ -36,7 +36,11 @@ public class PlayerScript : MonoBehaviour
     {
         UpdateAnimator();
     }
+    void UpdateRotation()
+    {
+        transform.Rotate(0, Input.GetAxis("Mouse X") * mouseSensitivy, 0, Space.Self);
 
+    }
     void ProcessMovement()
     {
         // Moving the character forward according to the speed
@@ -56,10 +60,7 @@ public class PlayerScript : MonoBehaviour
 
         // Calculate the movement direction based on input and camera orientation
         Vector3 moveDirection = (cameraForward * Input.GetAxis("Vertical")) + (cameraRight * Input.GetAxis("Horizontal"));
-        if (Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0)
-        {
-            transform.forward = moveDirection;
-        }
+        
         // Apply the movement direction and speed
         movement = moveDirection.normalized * speed * Time.deltaTime;
 
@@ -82,7 +83,7 @@ public class PlayerScript : MonoBehaviour
         {
             return runSpeed;
         }
-        else if (Input.GetKeyDown("left ctrl"))
+        else if (Input.GetKey("left ctrl"))
         {
             return crouchSpeed;
         }
@@ -110,7 +111,7 @@ public class PlayerScript : MonoBehaviour
             animator.SetFloat("Speed", 0.0f);
         }
 
-        if (Input.GetKeyDown("left ctrl"))
+        if (Input.GetKey("left ctrl"))
         {
             animator.SetBool("Crouching", true);
         }
