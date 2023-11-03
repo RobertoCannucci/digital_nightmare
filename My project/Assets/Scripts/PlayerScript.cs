@@ -82,7 +82,7 @@ public class PlayerScript : MonoBehaviour
         {
             return runSpeed;
         }
-        else if (Input.GetKeyDown("left ctrl"))// Left shift
+        else if (Input.GetKeyDown("left ctrl"))
         {
             return crouchSpeed;
         }
@@ -94,29 +94,30 @@ public class PlayerScript : MonoBehaviour
 
     void UpdateAnimator()
     {
-        bool isGrounded = controller.isGrounded;
-
         if (movement != Vector3.zero)
         {
-            if (GetMovementSpeed() == crouchSpeed)
+            if (GetMovementSpeed() == walkSpeed)
             {
-                animator.SetBool("Crouching", true);
-                animator.SetFloat("Speed", 1.0f);
-            }
-            else if (GetMovementSpeed() == runSpeed)
-            {
-                animator.SetFloat("Speed", 1.0f);
+                animator.SetFloat("Speed", 0.5f);
             }
             else
             {
-                animator.SetFloat("Speed", 0.5f);
+                animator.SetFloat("Speed", 1.0f);
             }
         }
         else
         {
             animator.SetFloat("Speed", 0.0f);
         }
-        animator.SetBool("IsGrounded", isGrounded);
+
+        if (Input.GetKeyDown("left ctrl"))
+        {
+            animator.SetBool("Crouching", true);
+        }
+        else
+        {
+            animator.SetBool("Crouching", false);
+        }
 
     }
 }
