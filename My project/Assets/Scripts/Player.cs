@@ -6,7 +6,7 @@ public class Player : MonoBehaviour
 {
     Vector3 playerVelocity;
     Vector3 move;
-
+    public float speed;
     public float walkSpeed = 5;
     public float runSpeed = 8; 
     public float gravity = -9.18f;
@@ -34,11 +34,11 @@ public class Player : MonoBehaviour
     {
         if (move != Vector3.zero)
         {
-            animator.SetFloat("Speed", 0.5f);
+            animator.SetFloat("Speed", speed);
         }
         else
         {
-            animator.SetFloat("Speed", 0.0f);
+            animator.SetFloat("Speed", speed);
         }
     }
     void ProcessMovement()
