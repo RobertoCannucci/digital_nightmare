@@ -11,7 +11,7 @@ public class CameraRotation : MonoBehaviour
 	}
 	private Animator playerAnimator;
 	float sensitivity = 2f;
-    float yRotationLimit = 46.5f;
+    float yRotationLimit = 52.8f;
 
 	Vector2 rotation = Vector2.zero;
 	const string xAxis = "Mouse X"; //Strings in direct code generate garbage, storing and re-using them creates no garbage
