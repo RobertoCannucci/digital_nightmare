@@ -2,27 +2,50 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerScript : MonoBehaviour
 {
+    public bool isGamePaused = false;
+
+    public List<string> collectedNotes;
+
+    public Text displayTextUI;
+    public Canvas pauseMenu;
+
+    private float pickUpRange = 3.75f;
+
     public GameObject leftHandIK;
     public GameObject leftHandObj;
-    private Vector3 leftHandObjPos = new Vector3(0.005f, -0.149f, 0.48f);
+    private Vector3 leftHandObjPos = new Vector3(-0.349f, -0.03f, 0.2f);
+    //private Vector3 leftHandObjPos = new Vector3(0.005f, -0.149f, 0.48f);
     private Quaternion leftHandObjRot = Quaternion.Euler(new Vector3(115.79f, 0, -53.3f));
+
+    public List<GameObject> rightHandInventory = new List<GameObject>();
+    public int rightHandIdx = 0;
     public GameObject rightHandIK;
     public GameObject rightHandObj;
     private Vector3 rightHandObjPos = new Vector3(-0.038f, -0.201f, 0.388f);
     private Quaternion rightHandObjRot = Quaternion.Euler(new Vector3(76.619f, 193.493f, -118.233f));
+
+    public GameObject hoveringIK;
+    public GameObject hoveringObj;
+    private Vector3 hoveringObjOriginalPos;
+    private Vector3 hoveringObjOriginalForward;
+    private GameObject droppingHoveringObj;
+
     private Vector3 standingControllerCenter = new Vector3(0, 1.9f, 0);
     private float standingControllerHeight = 3.8f;
     private Vector3 crouchingControllerCenter = new Vector3(0, 1.5f, 0);
     private float crouchingControllerHeight = 2.8f;
+
     public Vector3 gravity;
     public Vector3 playerVelocity;
     public bool groundedPlayer;
     public float mouseSensitivy = 5.0f;
     private float gravityValue = -9.81f;
     private CharacterController controller;
+
     private float crouchSpeed = 2.5f;
     private float walkSpeed = 5;
     private float runSpeed = 8;
@@ -32,56 +55,179 @@ public class PlayerScript : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+        rightHandInventory.Add(null);
     }
 
     void Update()
     {
         Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = false;
-        UpdateRotation();
-        ProcessMovement();
         ProcessInput();
+        if (hoveringObj != null)
+        {
+            PickUpHovering();
+        }
+        else if (!isGamePaused)
+        {
+            ProcessMovement();
+            UpdateRotation();
+            Cursor.visible = false;
+        }
+        if (droppingHoveringObj != null || droppingHoveringObj != null)
+        {
+            DropHovering();
+        }
     }
     public void LateUpdate()
     {
-        UpdateAnimator();
+        if (hoveringObj == null)
+        {
+            UpdateAnimator();
+        }
+    }
+    public void TogglePauseGame()
+    {
+        if (isGamePaused)
+        {
+            Time.timeScale = 1f;
+            AudioListener.pause = false;
+            pauseMenu.gameObject.SetActive(false);
+            Camera.main.GetComponent<CameraRotation>().lockedCamera = false;
+            Cursor.visible = false;
+        }
+        else
+        {
+            Time.timeScale = 0f;
+            AudioListener.pause = true;
+            pauseMenu.gameObject.SetActive(true);
+            Camera.main.GetComponent<CameraRotation>().lockedCamera = true;
+            Cursor.visible = true;
+        }
+        isGamePaused = !isGamePaused;
     }
     void ProcessInput()
     {
         if (Input.GetKeyUp(KeyCode.Escape))
         {
-            // Pause Menu
+            TogglePauseGame();
         }
-        if (Input.GetKeyDown(KeyCode.E))
+        else if (!isGamePaused)
         {
-            RaycastHit hit;
-            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-            if (Physics.Raycast(ray, out hit))
+            if (Input.GetKeyDown(KeyCode.F))
             {
-                if (hit.collider.tag.Contains("PickUp"))
+                if (hoveringObj != null)
                 {
-                    PickUpObject(hit.collider.gameObject);
+                    hoveringObj.GetComponent<Rigidbody>().isKinematic = false;
+                    droppingHoveringObj = hoveringObj;
+                    hoveringObj = null;
+                    droppingHoveringObj.transform.parent = null;
+                    Camera.main.GetComponent<CameraRotation>().lockedCamera = false;
+                }
+                else
+                {
+                    RaycastHit hit;
+                    Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+                    if (Physics.Raycast(ray, out hit))
+                    {
+                        if (hit.collider.tag.Contains("PickUp"))
+                        {
+                            Vector3 playerPosToObjectPos = hit.transform.position - transform.position;
+                            if (playerPosToObjectPos.magnitude <= pickUpRange)
+                            {
+                                PickUpObject(hit.collider.gameObject);
+                            }
+                            else
+                            {
+                                StartCoroutine(DisplayText("Object is too far"));
+                            }
+                        }
+                    }
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.G))
+            {
+                CycleRightHand();
+            }
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                DropLeftHand();
+            }
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                ThrowLeftHand();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Mouse0))
+            {
+                if (rightHandObj != null && rightHandObj.tag.Contains("FlashLight"))
+                {
+                    ToggleFlashLight();
                 }
             }
         }
-
-        if (Input.GetButtonDown("Fire1"))
+    }
+    // https://forum.unity.com/threads/fading-in-out-gui-text-with-c-solved.380822/
+    IEnumerator DisplayText(string textToDisplay)
+    {
+        displayTextUI.text = textToDisplay;
+        displayTextUI.color = new Color(displayTextUI.color.r, displayTextUI.color.g, displayTextUI.color.b, 1);
+        System.Threading.Thread.Sleep(200);
+        while (displayTextUI.color.a > 0.0f)
         {
-            if (rightHandObj != null && rightHandObj.tag.Contains("FlashLight"))
+            displayTextUI.color = new Color(displayTextUI.color.r, displayTextUI.color.g, displayTextUI.color.b, displayTextUI.color.a - (Time.deltaTime / 2.5f));
+            yield return null;
+        }
+    }
+    void ThrowLeftHand()
+    {
+        if (leftHandObj != null)
+        {
+            if (leftHandObj.tag.Contains("MetalBottle"))
             {
-                ToggleFlashLight();
+                leftHandObj.GetComponent<MetalBottleScript>().canPlaySound = true;
             }
+            leftHandObj.GetComponent<Rigidbody>().isKinematic = false;
+            leftHandObj.transform.position = hoveringIK.transform.position;
+            leftHandObj.transform.parent = null;
+            leftHandObj.GetComponent<Rigidbody>().AddForce(Camera.main.transform.forward * 10, ForceMode.VelocityChange);
+            leftHandObj = null;
+        }
+    }
+    void DropLeftHand()
+    {
+        if (leftHandObj != null)
+        {
+            leftHandObj.GetComponent<Rigidbody>().isKinematic = false;
+            leftHandObj.transform.parent = null;
+            leftHandObj = null;
+        }
+    }
+    void CycleRightHand()
+    {
+        rightHandIdx++;
+        if (rightHandIdx >= rightHandInventory.Count)
+        {
+            rightHandIdx = 0;
+        }
+        if (rightHandObj != null)
+        {
+            rightHandObj.SetActive(false);
+        }
+        rightHandObj = rightHandInventory[rightHandIdx];
+        if (rightHandInventory[rightHandIdx] != null)
+        {
+            rightHandObj.SetActive(true);
+            rightHandObj.GetComponent<Rigidbody>().isKinematic = true;
+            rightHandObj.transform.parent = rightHandIK.transform;
+            rightHandObj.transform.localPosition = rightHandObjPos;
+            rightHandObj.transform.localRotation = rightHandObjRot;
         }
     }
     void PickUpObject(GameObject pickUp)
     {
         if (pickUp.tag.Contains("RightHand"))
         {
-            rightHandObj = pickUp;
-            rightHandObj.GetComponent<Rigidbody>().isKinematic = true;
-            rightHandObj.transform.parent = rightHandIK.transform;
-            rightHandObj.transform.localPosition = rightHandObjPos;
-            rightHandObj.transform.localRotation = rightHandObjRot;
+            rightHandInventory.Add(pickUp);
+            CycleRightHand();
 
             if (pickUp.tag.Contains("FlashLight"))
             {
@@ -95,6 +241,54 @@ public class PlayerScript : MonoBehaviour
             leftHandObj.transform.parent = leftHandIK.transform;
             leftHandObj.transform.localPosition = leftHandObjPos;
             leftHandObj.transform.localRotation = leftHandObjRot;
+        }
+        if (pickUp.tag.Contains("Hovering"))
+        {
+            hoveringObj = pickUp;
+            hoveringObjOriginalPos = hoveringObj.transform.position;
+            hoveringObjOriginalForward = hoveringObj.transform.forward;
+            hoveringObj.GetComponent<Rigidbody>().isKinematic = true;
+            hoveringObj.transform.parent = hoveringIK.transform;
+            Camera.main.GetComponent<CameraRotation>().lockedCamera = true;
+
+            if (pickUp.tag.Contains("Note"))
+            {
+                NoteScript ns = hoveringObj.GetComponent<NoteScript>();
+                if (!ns.collected)
+                {
+                    collectedNotes.Add(ns.note);
+                    ns.collected = true;
+                }
+            }
+        }
+
+    }
+    void PickUpHovering()
+    {
+        if (hoveringObj.transform.position != hoveringIK.transform.position)
+        {
+            hoveringObj.transform.position = Vector3.MoveTowards(hoveringObj.transform.position, hoveringIK.transform.position, Time.deltaTime * 15);
+        }
+        if (hoveringObj.transform.forward != hoveringIK.transform.forward)
+        {
+            Vector3 newDirection = Vector3.RotateTowards(hoveringObj.transform.forward, hoveringIK.transform.forward, Time.deltaTime * 5, 0.0f);
+            hoveringObj.transform.rotation = Quaternion.LookRotation(newDirection);
+        }
+    }
+    void DropHovering()
+    {
+        if (droppingHoveringObj.transform.position != hoveringObjOriginalPos)
+        {
+            droppingHoveringObj.transform.position = Vector3.MoveTowards(droppingHoveringObj.transform.position, hoveringObjOriginalPos, Time.deltaTime * 15);
+        }
+        if (droppingHoveringObj.transform.forward != hoveringObjOriginalForward)
+        {
+            Vector3 newDirection = Vector3.RotateTowards(droppingHoveringObj.transform.forward, hoveringObjOriginalForward, Time.deltaTime * 5, 0.0f);
+            droppingHoveringObj.transform.rotation = Quaternion.LookRotation(newDirection);
+        }
+        if (droppingHoveringObj.transform.position == hoveringObjOriginalPos && droppingHoveringObj.transform.forward == hoveringObjOriginalForward)
+        {
+            droppingHoveringObj = null;
         }
     }
     void ToggleFlashLight()
@@ -222,9 +416,9 @@ public class PlayerScript : MonoBehaviour
             }
             else
             {
+                animator.SetBool("LeftHandHolding", false);
                 animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 0);
                 animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 0);
-                animator.SetLookAtWeight(0);
             }
 
             if (rightHandObj != null)
@@ -237,6 +431,7 @@ public class PlayerScript : MonoBehaviour
             }
             else
             {
+                animator.SetBool("RightHandHolding", false);
                 animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 0);
                 animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 0);
             }
