@@ -1783,6 +1783,7 @@ GameObject:
   - component: {fileID: 427229550}
   - component: {fileID: 427229549}
   - component: {fileID: 427229552}
+  - component: {fileID: 427229553}
   m_Layer: 0
   m_Name: Cylinder
   m_TagString: PickUpLeftHand
@@ -1885,6 +1886,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &427229553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 427229547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef9889c1ce4ac845a362e127a780a11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &451831151 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: f11fc176e6bfb834490d0c67b60f6e36, type: 3}
@@ -1919,6 +1932,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.06, y: 0.006, z: 0.03}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &451831155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 451831151}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef9889c1ce4ac845a362e127a780a11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &467825741
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2274,6 +2299,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collisionAudio: {fileID: 8300000, guid: 0559e70da6ee134489c37cd1482986bd, type: 3}
   canPlaySound: 0
+--- !u!114 &520278917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520278911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef9889c1ce4ac845a362e127a780a11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &524487631
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2712,6 +2749,7 @@ GameObject:
   - component: {fileID: 722114814}
   - component: {fileID: 722114813}
   - component: {fileID: 722114812}
+  - component: {fileID: 722114818}
   m_Layer: 0
   m_Name: Note 2
   m_TagString: PickUpHoveringNote
@@ -2733,6 +2771,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   note: This is a really awesome note 2
   collected: 0
+  hoveringIK: {fileID: 0}
+  isPickedUp: 0
+  isDropping: 0
+  hoveringObjOriginalPos: {x: 0, y: 0, z: 0}
+  hoveringObjOriginalForward: {x: 0, y: 0, z: 0}
 --- !u!54 &722114813
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2782,7 +2825,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 3bf4c59e1e823fe418305c9056237a4d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2820,13 +2863,25 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 722114811}
   m_LocalRotation: {x: -0.3003174, y: -0, z: -0, w: 0.95383936}
-  m_LocalPosition: {x: 1.25, y: 2.522, z: 3.06}
+  m_LocalPosition: {x: -0.733, y: 2.522, z: 3.06}
   m_LocalScale: {x: 0.5, y: 0.050000016, z: 0.5000001}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: -34.953, y: 0, z: 0}
+--- !u!114 &722114818
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 722114811}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef9889c1ce4ac845a362e127a780a11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &739437627
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5014,6 +5069,23 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 493704, guid: 2bb715d5d7333cd4cb60235ee1d6bfc4, type: 3}
   m_PrefabInstance: {fileID: 1278249586}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1294155933 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3924153225260563338, guid: 28b8c9fb52af9d44cac21606c4814092, type: 3}
+  m_PrefabInstance: {fileID: 3924153226299539340}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1294155940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1294155933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef9889c1ce4ac845a362e127a780a11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1349705617
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6344,6 +6416,7 @@ GameObject:
   - component: {fileID: 1737317852}
   - component: {fileID: 1737317851}
   - component: {fileID: 1737317850}
+  - component: {fileID: 1737317856}
   m_Layer: 0
   m_Name: Note 3
   m_TagString: PickUpHoveringNote
@@ -6365,6 +6438,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   note: This is a really awesome note 3
   collected: 0
+  hoveringIK: {fileID: 0}
+  isPickedUp: 0
+  isDropping: 0
+  hoveringObjOriginalPos: {x: 0, y: 0, z: 0}
+  hoveringObjOriginalForward: {x: 0, y: 0, z: 0}
 --- !u!54 &1737317851
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6414,7 +6492,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: c4bee2ace47c247438bb6343f4383c72, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6452,13 +6530,25 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1737317849}
   m_LocalRotation: {x: -0.3003174, y: -0, z: -0, w: 0.95383936}
-  m_LocalPosition: {x: -1.894, y: 2.522, z: 3.06}
+  m_LocalPosition: {x: 0.333, y: 2.522, z: 3.06}
   m_LocalScale: {x: 0.5, y: 0.050000016, z: 0.5000001}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: -34.953, y: 0, z: 0}
+--- !u!114 &1737317856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1737317849}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef9889c1ce4ac845a362e127a780a11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1737723578
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6739,6 +6829,7 @@ GameObject:
   - component: {fileID: 1761430839}
   - component: {fileID: 1761430838}
   - component: {fileID: 1761430843}
+  - component: {fileID: 1761430844}
   m_Layer: 0
   m_Name: Note 1
   m_TagString: PickUpHoveringNote
@@ -6833,7 +6924,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1761430837}
   m_LocalRotation: {x: -0.3003174, y: -0, z: -0, w: 0.95383936}
-  m_LocalPosition: {x: -0.783, y: 2.522, z: 3.06}
+  m_LocalPosition: {x: -1.808, y: 2.522, z: 3.06}
   m_LocalScale: {x: 0.5, y: 0.050000016, z: 0.5000001}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -6854,6 +6945,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   note: This is a really awesome note 1
   collected: 0
+  hoveringIK: {fileID: 0}
+  isPickedUp: 0
+  isDropping: 0
+  hoveringObjOriginalPos: {x: 0, y: 0, z: 0}
+  hoveringObjOriginalForward: {x: 0, y: 0, z: 0}
+--- !u!114 &1761430844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1761430837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ef9889c1ce4ac845a362e127a780a11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1767633343
 PrefabInstance:
   m_ObjectHideFlags: 0

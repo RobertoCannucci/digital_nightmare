@@ -17,22 +17,19 @@ public class PlayerScript : MonoBehaviour
 
     public GameObject leftHandIK;
     public GameObject leftHandObj;
-    private Vector3 leftHandObjPos = new Vector3(-0.349f, -0.03f, 0.2f);
+    public Vector3 leftHandObjPos = new Vector3(-0.349f, -0.03f, 0.2f);
     //private Vector3 leftHandObjPos = new Vector3(0.005f, -0.149f, 0.48f);
-    private Quaternion leftHandObjRot = Quaternion.Euler(new Vector3(115.79f, 0, -53.3f));
+    public Quaternion leftHandObjRot = Quaternion.Euler(new Vector3(115.79f, 0, -53.3f));
 
     public List<GameObject> rightHandInventory = new List<GameObject>();
     public int rightHandIdx = 0;
     public GameObject rightHandIK;
     public GameObject rightHandObj;
-    private Vector3 rightHandObjPos = new Vector3(-0.038f, -0.201f, 0.388f);
-    private Quaternion rightHandObjRot = Quaternion.Euler(new Vector3(76.619f, 193.493f, -118.233f));
+    public Vector3 rightHandObjPos = new Vector3(-0.038f, -0.201f, 0.388f);
+    public Quaternion rightHandObjRot = Quaternion.Euler(new Vector3(76.619f, 193.493f, -118.233f));
 
     public GameObject hoveringIK;
     public GameObject hoveringObj;
-    private Vector3 hoveringObjOriginalPos;
-    private Vector3 hoveringObjOriginalForward;
-    private GameObject droppingHoveringObj;
 
     private Vector3 standingControllerCenter = new Vector3(0, 1.9f, 0);
     private float standingControllerHeight = 3.8f;
@@ -62,19 +59,11 @@ public class PlayerScript : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Confined;
         ProcessInput();
-        if (hoveringObj != null)
-        {
-            PickUpHovering();
-        }
-        else if (!isGamePaused)
+        if (!isGamePaused && hoveringObj == null)
         {
             ProcessMovement();
             UpdateRotation();
             Cursor.visible = false;
-        }
-        if (droppingHoveringObj != null || droppingHoveringObj != null)
-        {
-            DropHovering();
         }
     }
     public void LateUpdate()
@@ -114,31 +103,20 @@ public class PlayerScript : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
-                if (hoveringObj != null)
+                RaycastHit hit;
+                Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+                if (Physics.Raycast(ray, out hit))
                 {
-                    hoveringObj.GetComponent<Rigidbody>().isKinematic = false;
-                    droppingHoveringObj = hoveringObj;
-                    hoveringObj = null;
-                    droppingHoveringObj.transform.parent = null;
-                    Camera.main.GetComponent<CameraRotation>().lockedCamera = false;
-                }
-                else
-                {
-                    RaycastHit hit;
-                    Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-                    if (Physics.Raycast(ray, out hit))
+                    if (hit.collider.tag.Contains("PickUp"))
                     {
-                        if (hit.collider.tag.Contains("PickUp"))
+                        Vector3 playerPosToObjectPos = hit.transform.position - transform.position;
+                        if (playerPosToObjectPos.magnitude <= pickUpRange)
                         {
-                            Vector3 playerPosToObjectPos = hit.transform.position - transform.position;
-                            if (playerPosToObjectPos.magnitude <= pickUpRange)
-                            {
-                                PickUpObject(hit.collider.gameObject);
-                            }
-                            else
-                            {
-                                StartCoroutine(DisplayText("Object is too far"));
-                            }
+                            hit.collider.gameObject.GetComponent<PickUpItemScript>().PickUpObject();
+                        }
+                        else
+                        {
+                            StartCoroutine(DisplayText("Object is too far"));
                         }
                     }
                 }
@@ -149,7 +127,8 @@ public class PlayerScript : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.R))
             {
-                DropLeftHand();
+                DetachItemFromHand(leftHandObj);
+                leftHandObj = null;
             }
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -185,23 +164,22 @@ public class PlayerScript : MonoBehaviour
             {
                 leftHandObj.GetComponent<MetalBottleScript>().canPlaySound = true;
             }
-            leftHandObj.GetComponent<Rigidbody>().isKinematic = false;
-            leftHandObj.transform.position = hoveringIK.transform.position;
-            leftHandObj.transform.parent = null;
-            leftHandObj.GetComponent<Rigidbody>().AddForce(Camera.main.transform.forward * 10, ForceMode.VelocityChange);
+            GameObject throwingObject = leftHandObj;
+            DetachItemFromHand(leftHandObj);
             leftHandObj = null;
+            throwingObject.transform.position = hoveringIK.transform.position;
+            throwingObject.GetComponent<Rigidbody>().AddForce(Camera.main.transform.forward * 10, ForceMode.VelocityChange);
         }
     }
-    void DropLeftHand()
+    void DetachItemFromHand(GameObject obj)
     {
-        if (leftHandObj != null)
+        if (obj != null)
         {
-            leftHandObj.GetComponent<Rigidbody>().isKinematic = false;
-            leftHandObj.transform.parent = null;
-            leftHandObj = null;
+            obj.GetComponent<Rigidbody>().isKinematic = false;
+            obj.transform.parent = null;
         }
     }
-    void CycleRightHand()
+    public void CycleRightHand()
     {
         rightHandIdx++;
         if (rightHandIdx >= rightHandInventory.Count)
@@ -216,82 +194,17 @@ public class PlayerScript : MonoBehaviour
         if (rightHandInventory[rightHandIdx] != null)
         {
             rightHandObj.SetActive(true);
-            rightHandObj.GetComponent<Rigidbody>().isKinematic = true;
-            rightHandObj.transform.parent = rightHandIK.transform;
-            rightHandObj.transform.localPosition = rightHandObjPos;
-            rightHandObj.transform.localRotation = rightHandObjRot;
+            AttachItemToHand(rightHandObj, rightHandIK, rightHandObjPos, rightHandObjRot);
         }
     }
-    void PickUpObject(GameObject pickUp)
+    public void AttachItemToHand(GameObject obj, GameObject handIK, Vector3 handObjPos, Quaternion handObjRot)
     {
-        if (pickUp.tag.Contains("RightHand"))
-        {
-            rightHandInventory.Add(pickUp);
-            CycleRightHand();
-
-            if (pickUp.tag.Contains("FlashLight"))
-            {
-                ToggleFlashLight();
-            }
-        }
-        if (pickUp.tag.Contains("LeftHand"))
-        {
-            leftHandObj = pickUp;
-            leftHandObj.GetComponent<Rigidbody>().isKinematic = true;
-            leftHandObj.transform.parent = leftHandIK.transform;
-            leftHandObj.transform.localPosition = leftHandObjPos;
-            leftHandObj.transform.localRotation = leftHandObjRot;
-        }
-        if (pickUp.tag.Contains("Hovering"))
-        {
-            hoveringObj = pickUp;
-            hoveringObjOriginalPos = hoveringObj.transform.position;
-            hoveringObjOriginalForward = hoveringObj.transform.forward;
-            hoveringObj.GetComponent<Rigidbody>().isKinematic = true;
-            hoveringObj.transform.parent = hoveringIK.transform;
-            Camera.main.GetComponent<CameraRotation>().lockedCamera = true;
-
-            if (pickUp.tag.Contains("Note"))
-            {
-                NoteScript ns = hoveringObj.GetComponent<NoteScript>();
-                if (!ns.collected)
-                {
-                    collectedNotes.Add(ns.note);
-                    ns.collected = true;
-                }
-            }
-        }
-
+        obj.GetComponent<Rigidbody>().isKinematic = true;
+        obj.transform.parent = handIK.transform;
+        obj.transform.localPosition = handObjPos;
+        obj.transform.localRotation = handObjRot;
     }
-    void PickUpHovering()
-    {
-        if (hoveringObj.transform.position != hoveringIK.transform.position)
-        {
-            hoveringObj.transform.position = Vector3.MoveTowards(hoveringObj.transform.position, hoveringIK.transform.position, Time.deltaTime * 15);
-        }
-        if (hoveringObj.transform.forward != hoveringIK.transform.forward)
-        {
-            Vector3 newDirection = Vector3.RotateTowards(hoveringObj.transform.forward, hoveringIK.transform.forward, Time.deltaTime * 5, 0.0f);
-            hoveringObj.transform.rotation = Quaternion.LookRotation(newDirection);
-        }
-    }
-    void DropHovering()
-    {
-        if (droppingHoveringObj.transform.position != hoveringObjOriginalPos)
-        {
-            droppingHoveringObj.transform.position = Vector3.MoveTowards(droppingHoveringObj.transform.position, hoveringObjOriginalPos, Time.deltaTime * 15);
-        }
-        if (droppingHoveringObj.transform.forward != hoveringObjOriginalForward)
-        {
-            Vector3 newDirection = Vector3.RotateTowards(droppingHoveringObj.transform.forward, hoveringObjOriginalForward, Time.deltaTime * 5, 0.0f);
-            droppingHoveringObj.transform.rotation = Quaternion.LookRotation(newDirection);
-        }
-        if (droppingHoveringObj.transform.position == hoveringObjOriginalPos && droppingHoveringObj.transform.forward == hoveringObjOriginalForward)
-        {
-            droppingHoveringObj = null;
-        }
-    }
-    void ToggleFlashLight()
+    public void ToggleFlashLight()
     {
         Light LightComponent = rightHandObj.transform.GetChild(0).GetComponent<Light>();
         if (LightComponent.intensity == 0)
@@ -389,7 +302,6 @@ public class PlayerScript : MonoBehaviour
             controller.center = standingControllerCenter;
             controller.height = standingControllerHeight;
         }
-
     }
 
     //a callback for calculating IK
@@ -397,14 +309,6 @@ public class PlayerScript : MonoBehaviour
     {
         if (animator)
         {
-
-            // Set the look target position, if one has been assigned
-            //if (lookObj != null)
-            //{
-            //    animator.SetLookAtWeight(1);
-            //    animator.SetLookAtPosition(Camera.main.transform.position + Camera.main.transform.forward);
-            //}
-
             // Set the right hand target position and rotation, if one has been assigned
             if (leftHandObj != null)
             {
@@ -435,9 +339,6 @@ public class PlayerScript : MonoBehaviour
                 animator.SetIKPositionWeight(AvatarIKGoal.RightHand, 0);
                 animator.SetIKRotationWeight(AvatarIKGoal.RightHand, 0);
             }
-
-
-
         }
     }
 }
