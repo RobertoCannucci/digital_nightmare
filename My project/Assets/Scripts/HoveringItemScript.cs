@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class HoveringItemScript : MonoBehaviour
 {
-    public string note;
-    public bool collected = false;
     public GameObject hoveringIK;
     public bool isPickedUp = false;
     public bool isDropping = false;

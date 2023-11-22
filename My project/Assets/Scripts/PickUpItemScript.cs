@@ -38,7 +38,8 @@ public class PickUpItemScript : MonoBehaviour
 
             if (gameObject.tag.Contains("Note"))
             {
-                HoveringItemScript ns = GetComponent<HoveringItemScript>();
+                NoteScript ns = gameObject.GetComponent<NoteScript>();
+                Debug.Log(ns);
                 if (!ns.collected)
                 {
                     ps.collectedNotes.Add(ns.note);
