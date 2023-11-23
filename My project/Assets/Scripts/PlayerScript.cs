@@ -80,7 +80,10 @@ public class PlayerScript : MonoBehaviour
             Time.timeScale = 1f;
             AudioListener.pause = false;
             pauseMenu.gameObject.SetActive(false);
-            Camera.main.GetComponent<CameraRotation>().lockedCamera = false;
+            if (hoveringObj == null)
+            {
+                Camera.main.GetComponent<CameraRotation>().lockedCamera = false;
+            }
             Cursor.visible = false;
         }
         else
@@ -101,7 +104,7 @@ public class PlayerScript : MonoBehaviour
         }
         else if (!isGamePaused)
         {
-            if (Input.GetKeyDown(KeyCode.F))
+            if (Input.GetKeyDown(KeyCode.F) && !(Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.E)))
             {
                 RaycastHit hit;
                 Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
@@ -133,6 +136,34 @@ public class PlayerScript : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 ThrowLeftHand();
+            }
+            if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.E))
+            {
+                Camera.main.GetComponent<CameraRotation>().leaningLeft = false;
+                Camera.main.GetComponent<CameraRotation>().leaningRight = false;
+                leftHandIK.SetActive(true);
+                rightHandIK.SetActive(true);
+            }
+            else if (Input.GetKey(KeyCode.Q) && hoveringObj == null)
+            {
+                Camera.main.GetComponent<CameraRotation>().leaningLeft = true;
+                Camera.main.GetComponent<CameraRotation>().leaningRight = false;
+                leftHandIK.SetActive(false);
+                rightHandIK.SetActive(false);
+            }
+            else if (Input.GetKey(KeyCode.E) && hoveringObj == null)
+            {
+                Camera.main.GetComponent<CameraRotation>().leaningLeft = false;
+                Camera.main.GetComponent<CameraRotation>().leaningRight = true;
+                leftHandIK.SetActive(false);
+                rightHandIK.SetActive(false);
+            }
+            else
+            {
+                Camera.main.GetComponent<CameraRotation>().leaningLeft = false;
+                Camera.main.GetComponent<CameraRotation>().leaningRight = false;
+                leftHandIK.SetActive(true);
+                rightHandIK.SetActive(true);
             }
 
             if (Input.GetKeyDown(KeyCode.Mouse0))

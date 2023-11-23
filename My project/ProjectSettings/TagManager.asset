@@ -11,6 +11,9 @@ TagManager:
   - DisplayText
   - PickUpLeftHandMetalBottle
   - PickUpHoveringNote
+  - Monster
+  - USBLight
+  - PickUpRightHandUSB
   layers:
   - Default
   - TransparentFX

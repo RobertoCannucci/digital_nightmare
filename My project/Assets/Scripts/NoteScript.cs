@@ -10,13 +10,14 @@ public class NoteScript : MonoBehaviour
     public string note;
     public bool collected = false;
     public int noteIdx = 0;
-    public int noteSetIdk = 0;
-    SerializableJsonNoteSet[] noteSets;
+    private SerializableNote NoteFromNoteSet;
     void Start()
     {
-        SerializableJsonNoteSet noteSet = JsonUtility.FromJson<SerializableJsonNoteSet>(File.ReadAllText("Assets/Notes/noteSet0.json"));
-        Debug.Log(noteSet.set[0].noteText);
+        NoteFromNoteSet = GameManager.Instance.GetNote(noteIdx);
+        note = NoteFromNoteSet.noteText;
         transform.GetChild(0).gameObject.GetComponent<TextMeshPro>().text = note;
+        transform.rotation = Quaternion.Euler(NoteFromNoteSet.noteRotX, NoteFromNoteSet.noteRotY, NoteFromNoteSet.noteRotZ);
+        transform.position = new Vector3(NoteFromNoteSet.notePosX, NoteFromNoteSet.notePosY, NoteFromNoteSet.notePosZ);
         
     }
 

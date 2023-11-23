@@ -14,8 +14,10 @@ public class CameraRotation : MonoBehaviour
     float sensitivity = 2f;
     float yRotationLimit = 52.8f;
     public bool lockedCamera = false;
+    public bool leaningLeft = false;
+    public bool leaningRight = false;
 
-    Vector2 rotation = Vector2.zero;
+    Vector3 rotation = Vector3.zero;
     const string xAxis = "Mouse X"; //Strings in direct code generate garbage, storing and re-using them creates no garbage
     const string yAxis = "Mouse Y";
 
@@ -27,14 +29,28 @@ public class CameraRotation : MonoBehaviour
     {
         if (!lockedCamera)
         {
+            float cameraRotZOffset = 0f;
+            float cameraPosXOffset = 0f;
             transform.position = playerAnimator.GetBoneTransform(HumanBodyBones.Head).position;
+            if (leaningLeft)
+            {
+                cameraRotZOffset = 18.9f;
+                cameraPosXOffset = -2.1f;
+            }
+            if (leaningRight)
+            {
+                cameraPosXOffset = 2.1f;
+                cameraRotZOffset = -18.9f;
+            }
+            transform.localPosition = new Vector3(transform.localPosition.x + cameraPosXOffset, transform.localPosition.y, transform.localPosition.z);
             //rotation.x += Input.GetAxis(xAxis) * sensitivity;
             rotation.y += Input.GetAxis(yAxis) * sensitivity;
             rotation.y = Mathf.Clamp(rotation.y, -yRotationLimit, 90);
             var xQuat = Quaternion.AngleAxis(rotation.x, Vector3.up);
             var yQuat = Quaternion.AngleAxis(rotation.y, Vector3.left);
+            var zQuat = Quaternion.AngleAxis(rotation.z + cameraRotZOffset, Vector3.forward);
 
-            transform.localRotation = xQuat * yQuat; //Quaternions seem to rotate more consistently than EulerAngles. Sensitivity seemed to change slightly at certain degrees using Euler. transform.localEulerAngles = new Vector3(-rotation.y, rotation.x, 0);
+            transform.localRotation = xQuat * yQuat * zQuat;
         }
     }
 }

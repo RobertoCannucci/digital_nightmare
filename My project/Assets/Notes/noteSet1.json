@@ -1,4 +1,24 @@
 {
-  "1": "this is the first note",
-  "2": "this is the second note"
+  "set": [
+    {
+      "noteIdx": 0,
+      "noteText": "this is the first note set 1",
+      "notePosX": 0.3,
+      "notePosY": 0.9,
+      "notePosZ": 3.79,
+      "noteRotX": 90,
+      "noteRotY": 0,
+      "noteRotZ": 0
+    },
+    {
+      "noteIdx": 1,
+      "noteText": "this is the second note set 1",
+      "notePosX": 0.0,
+      "notePosY": 0.0,
+      "notePosZ": 0.0,
+      "noteRotX": 90,
+      "noteRotY": 0,
+      "noteRotZ": 0
+    }
+  ]
 }

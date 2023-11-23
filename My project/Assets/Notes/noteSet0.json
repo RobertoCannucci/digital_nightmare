@@ -1,10 +1,24 @@
 {
   "set": [
     {
-      "noteText": "this is the first note"
+      "noteIdx": 0,
+      "noteText": "this is the first note",
+      "notePosX": -1.81,
+      "notePosY": 0.9,
+      "notePosZ": 2.85,
+      "noteRotX": -90,
+      "noteRotY": 0,
+      "noteRotZ": 0
     },
     {
-      "noteText": "this is the second note"
+      "noteIdx": 1,
+      "noteText": "this is the second note",
+      "notePosX": 0.0,
+      "notePosY": 0.0,
+      "notePosZ": 0.0,
+      "noteRotX": 90,
+      "noteRotY": 0,
+      "noteRotZ": 0
     }
   ]
 }

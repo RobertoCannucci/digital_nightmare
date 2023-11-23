@@ -26,6 +26,10 @@ public class PickUpItemScript : MonoBehaviour
             {
                 ps.ToggleFlashLight();
             }
+            if (tag.Contains("USB"))
+            {
+                gameObject.GetComponent<USBScript>().pickedUp = true;
+            }
         }
         if (tag.Contains("LeftHand"))
         {
