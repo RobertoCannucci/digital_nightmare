@@ -51,5 +51,20 @@ public class PickUpItemScript : MonoBehaviour
                 }
             }
         }
+        if (gameObject.tag.Contains("Inventory"))
+        {
+            if (gameObject.tag.Contains("Battery"))
+            {
+                if (ps.BatteryInventory < 3)
+                {
+                    GameManager.Instance.AddBattery();
+                    Destroy(gameObject);
+                }
+                else
+                {
+                    StartCoroutine(GameManager.Instance.DisplayText("Can't hold more than 3 batteries"));
+                }
+            }
+        }
     }
 }

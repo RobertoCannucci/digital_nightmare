@@ -2,18 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class PlayerScript : MonoBehaviour
 {
-    public bool isGamePaused = false;
-
     public List<string> collectedNotes;
 
-    public Text displayTextUI;
-    public Canvas pauseMenu;
-
     private float pickUpRange = 3.75f;
+
+    public int BatteryInventory = 0;
+    private bool Flashbanging = false;
 
     public GameObject leftHandIK;
     public GameObject leftHandObj;
@@ -59,7 +57,7 @@ public class PlayerScript : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Confined;
         ProcessInput();
-        if (!isGamePaused && hoveringObj == null)
+        if (!GameManager.Instance.isGamePaused && hoveringObj == null)
         {
             ProcessMovement();
             UpdateRotation();
@@ -73,36 +71,13 @@ public class PlayerScript : MonoBehaviour
             UpdateAnimator();
         }
     }
-    public void TogglePauseGame()
-    {
-        if (isGamePaused)
-        {
-            Time.timeScale = 1f;
-            AudioListener.pause = false;
-            pauseMenu.gameObject.SetActive(false);
-            if (hoveringObj == null)
-            {
-                Camera.main.GetComponent<CameraRotation>().lockedCamera = false;
-            }
-            Cursor.visible = false;
-        }
-        else
-        {
-            Time.timeScale = 0f;
-            AudioListener.pause = true;
-            pauseMenu.gameObject.SetActive(true);
-            Camera.main.GetComponent<CameraRotation>().lockedCamera = true;
-            Cursor.visible = true;
-        }
-        isGamePaused = !isGamePaused;
-    }
     void ProcessInput()
     {
         if (Input.GetKeyUp(KeyCode.Escape))
         {
-            TogglePauseGame();
+            GameManager.Instance.TogglePauseGame();
         }
-        else if (!isGamePaused)
+        else if (!GameManager.Instance.isGamePaused)
         {
             if (Input.GetKeyDown(KeyCode.F) && !(Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.E)))
             {
@@ -119,12 +94,12 @@ public class PlayerScript : MonoBehaviour
                         }
                         else
                         {
-                            StartCoroutine(DisplayText("Object is too far"));
+                            StartCoroutine(GameManager.Instance.DisplayText("Object is too far"));
                         }
                     }
                 }
             }
-            if (Input.GetKeyDown(KeyCode.G))
+            if (Input.GetKeyDown(KeyCode.G) && !Flashbanging)
             {
                 CycleRightHand();
             }
@@ -136,6 +111,24 @@ public class PlayerScript : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 ThrowLeftHand();
+            }
+            if (Input.GetKeyDown(KeyCode.Mouse1) && !Flashbanging)
+            {
+                if (rightHandObj != null && rightHandObj.tag.Contains("PickUpRightHandFlashLight"))
+                {
+                    if (BatteryInventory > 0)
+                    {
+                        Flashbang();
+                    }
+                    else
+                    {
+                        StartCoroutine(GameManager.Instance.DisplayText("No batteries in inventory for flashbang"));
+                    }
+                }
+                else
+                {
+                    StartCoroutine(GameManager.Instance.DisplayText("Not holding flashlight for flashbang"));
+                }
             }
             if (Input.GetKey(KeyCode.Q) && Input.GetKey(KeyCode.E))
             {
@@ -168,24 +161,76 @@ public class PlayerScript : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                if (rightHandObj != null && rightHandObj.tag.Contains("FlashLight"))
+                if (rightHandObj != null && rightHandObj.tag.Contains("FlashLight") && !Flashbanging)
                 {
                     ToggleFlashLight();
                 }
             }
         }
     }
-    // https://forum.unity.com/threads/fading-in-out-gui-text-with-c-solved.380822/
-    IEnumerator DisplayText(string textToDisplay)
+    void Flashbang()
     {
-        displayTextUI.text = textToDisplay;
-        displayTextUI.color = new Color(displayTextUI.color.r, displayTextUI.color.g, displayTextUI.color.b, 1);
-        System.Threading.Thread.Sleep(200);
-        while (displayTextUI.color.a > 0.0f)
+        GameManager.Instance.RemoveBattery();
+        rightHandObj.transform.GetChild(0).GetComponent<Light>().intensity = 0;
+        rightHandObj.transform.GetChild(1).GetComponent<Light>().intensity = 4.5f;
+        Flashbanging = true;
+
+        GameObject monster = GameObject.FindGameObjectWithTag("Monster");
+        // 1) Find Vector from monster to player
+        Vector3 monsterDirection = monster.transform.position - transform.position;
+        // 2) If monster is in range
+        if (monsterDirection.magnitude < 55)
         {
-            displayTextUI.color = new Color(displayTextUI.color.r, displayTextUI.color.g, displayTextUI.color.b, displayTextUI.color.a - (Time.deltaTime / 2.5f));
+            // 3) Getting angle between monster and player
+
+            Vector3 normMonsterDirection = Vector3.Normalize(monsterDirection);
+            // (can only find angle with normalized vectors)
+            float dotProduct = Vector3.Dot(transform.forward, normMonsterDirection);
+            float angle = Mathf.Acos(dotProduct);
+            float degreeAngle = angle * Mathf.Rad2Deg;
+            // If player is within monster's angle of sight
+            if (degreeAngle < 45)
+            {
+                // Create ray from monster to player
+                Ray ray = new Ray(transform.position, normMonsterDirection);
+                RaycastHit hit;
+
+                if (Physics.Raycast(ray, out hit))
+                {
+                    // If ray hits player
+                    if (hit.collider.tag == "Monster")
+                    {
+                        // hit.GetComponent<MonsterScript>().GetStunned();
+                        Debug.Log("stunned monster");
+                    }
+                }
+            }
+        }
+
+        StartCoroutine(TurnFlashbangOffSlow());
+        StartCoroutine(TurnRegularLightOnSlow());
+
+    }
+    public IEnumerator TurnFlashbangOffSlow()
+    {
+        Light flashbangLight = rightHandObj.transform.GetChild(1).GetComponent<Light>();
+        System.Threading.Thread.Sleep(750);
+        while (flashbangLight.intensity > 0.0f)
+        {
+            flashbangLight.intensity -= Time.deltaTime / (3 / 4.5f);
             yield return null;
         }
+    }
+    public IEnumerator TurnRegularLightOnSlow()
+    {
+        Light regularLight = rightHandObj.transform.GetChild(0).GetComponent<Light>();
+        System.Threading.Thread.Sleep(750);
+        while (regularLight.intensity <= 2.7f)
+        {
+            regularLight.intensity += Time.deltaTime / (3 / 2.7f);
+            yield return null;
+        }
+        Flashbanging = false;
     }
     void ThrowLeftHand()
     {
