@@ -183,9 +183,6 @@ namespace UnityEngine.UIElements
             if (m_Panel == null)
                 return;
 
-            // Allow KeyDown/KeyUp events to be processed before navigation events.
-            ProcessImguiEvents(true);
-
             using (var e = NavigationSubmitEvent.GetPooled())
             {
                 SendEvent(e, eventData);
@@ -197,9 +194,6 @@ namespace UnityEngine.UIElements
             if (m_Panel == null)
                 return;
 
-            // Allow KeyDown/KeyUp events to be processed before navigation events.
-            ProcessImguiEvents(true);
-
             using (var e = NavigationCancelEvent.GetPooled())
             {
                 SendEvent(e, eventData);
@@ -210,9 +204,6 @@ namespace UnityEngine.UIElements
         {
             if (m_Panel == null)
                 return;
-
-            // Allow KeyDown/KeyUp events to be processed before navigation events.
-            ProcessImguiEvents(true);
 
             using (var e = NavigationMoveEvent.GetPooled(eventData.moveVector))
             {
