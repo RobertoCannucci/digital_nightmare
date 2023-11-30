@@ -2928,13 +2928,13 @@ MonoBehaviour:
   collectedNotes: []
   BatteryInventory: 0
   leftHandIK: {fileID: 6225254201007622650}
-  leftHandObj: {fileID: 0}
+  leftHandObj: {fileID: 6225254201188593159}
   leftHandObjPos: {x: -0.349, y: -0.03, z: 0.2}
   leftHandObjRot: {x: 0.7570849, y: 0.3799466, z: -0.23838624, w: 0.47501054}
   rightHandInventory: []
   rightHandIdx: 0
   rightHandIK: {fileID: 6225254201388232495}
-  rightHandObj: {fileID: 0}
+  rightHandObj: {fileID: 6225254202135242116}
   rightHandObjPos: {x: -0.038, y: -0.201, z: 0.388}
   rightHandObjRot: {x: -0.7061345, y: 0.3374802, z: -0.23688169, w: -0.57564604}
   hoveringIK: {fileID: 6225254202369538898}

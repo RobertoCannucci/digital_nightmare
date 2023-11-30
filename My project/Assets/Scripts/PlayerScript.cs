@@ -73,6 +73,10 @@ public class PlayerScript : MonoBehaviour
     }
     void ProcessInput()
     {
+        if (GameManager.Instance == null)
+        {
+            return;
+        }
         if (Input.GetKeyUp(KeyCode.Escape))
         {
             GameManager.Instance.TogglePauseGame();
