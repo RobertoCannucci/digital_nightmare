@@ -8301,6 +8301,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2050547183}
     - target: {fileID: 7383996768328866314, guid: 20e7857ff34dc2c4a96062ec29990c07, type: 3}
+      propertyPath: GetNoteSetRandomly
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7383996768328866314, guid: 20e7857ff34dc2c4a96062ec29990c07, type: 3}
       propertyPath: batteriesUI.Array.data[0]
       value: 
       objectReference: {fileID: 534998437}
@@ -8472,15 +8476,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8672825252058031329, guid: c199d7c35b2a53e40a04535b16a484bf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.808
+      value: -1.953
       objectReference: {fileID: 0}
     - target: {fileID: 8672825252058031329, guid: c199d7c35b2a53e40a04535b16a484bf, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.522
+      value: 2.79
       objectReference: {fileID: 0}
     - target: {fileID: 8672825252058031329, guid: c199d7c35b2a53e40a04535b16a484bf, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.06
+      value: 4.002
       objectReference: {fileID: 0}
     - target: {fileID: 8672825252058031329, guid: c199d7c35b2a53e40a04535b16a484bf, type: 3}
       propertyPath: m_LocalRotation.w
@@ -8509,6 +8513,10 @@ PrefabInstance:
     - target: {fileID: 8672825252058031329, guid: c199d7c35b2a53e40a04535b16a484bf, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8672825252058031352, guid: c199d7c35b2a53e40a04535b16a484bf, type: 3}
+      propertyPath: noteIdx
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8672825252058031353, guid: c199d7c35b2a53e40a04535b16a484bf, type: 3}
       propertyPath: m_Name

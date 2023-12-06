@@ -36,8 +36,8 @@ public class GameManager : MonoBehaviour
             if (GetNoteSetRandomly)
             {
                 NoteSetIdx = Random.Range(0, 3);
-                noteSet = JsonUtility.FromJson<SerializableJsonNoteSet>(File.ReadAllText($"Assets/Notes/noteSet{NoteSetIdx}.json"));
             }
+            noteSet = JsonUtility.FromJson<SerializableJsonNoteSet>(File.ReadAllText($"Assets/Notes/noteSet{NoteSetIdx}.json"));
         }
 
     }
