@@ -49,7 +49,7 @@ public class EnemyScript : MonoBehaviour
                 {
                     //animator.SetBool("Scream", false);
                     GotoNextPoint();
-                    timer = 3.0f;
+                    timer = 0.1f;
                 }
             }
 
@@ -114,7 +114,7 @@ public class EnemyScript : MonoBehaviour
             StopMovement();
             transform.LookAt(player.transform.position);
             isPlayerInAttackRange = true;
-            //animator.SetTrigger("Attack");
+            animator.SetTrigger("Attack");
             Invoke("ResumeMovement", 2.0f);
         }
     }
@@ -137,7 +137,7 @@ public class EnemyScript : MonoBehaviour
     }
     public void HitPlayer()
     {
-       /** if (isPlayerInAttackRange)
+       /**if (isPlayerInAttackRange)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }*/
