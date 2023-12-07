@@ -115,6 +115,7 @@ public class EnemyScript : MonoBehaviour
             transform.LookAt(player.transform.position);
             isPlayerInAttackRange = true;
             animator.SetTrigger("Attack");
+            SceneManager.LoadScene(0);
             Invoke("ResumeMovement", 2.0f);
         }
     }

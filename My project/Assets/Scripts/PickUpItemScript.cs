@@ -24,7 +24,28 @@ public class PickUpItemScript : MonoBehaviour
 
             if (tag.Contains("FlashLight"))
             {
-                ps.ToggleFlashLight();
+                Light LightComponent = null;
+                if (tag.Contains("UV"))
+                {
+                    ps.UVUnlocked = true;
+                    for (var i = 0; i < ps.rightHandInventory.Count; i++)
+                    {
+                        if (ps.rightHandInventory[i].tag.Contains("FlashLight"))
+                        {
+                            ps.rightHandInventory.RemoveAt(i);
+                        }
+                    }
+                    LightComponent = gameObject.transform.GetChild(2).GetComponent<Light>();
+                    ps.UVMode = true;
+                }
+                else
+                {
+                    LightComponent = gameObject.transform.GetChild(0).GetComponent<Light>();
+                }
+                if (LightComponent.intensity == 0)
+                {
+                    ps.ToggleFlashLight();
+                }
             }
             if (tag.Contains("USB"))
             {

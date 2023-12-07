@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Locked;
         if (Instance == null)
         {
             Instance = this;
@@ -31,15 +33,20 @@ public class GameManager : MonoBehaviour
         }
 
         //if (SceneManager.GetActiveScene().name == "Level2")
-        if (true) // for testing purposes
-        {
-            if (GetNoteSetRandomly)
-            {
-                NoteSetIdx = Random.Range(0, 3);
-            }
-            noteSet = JsonUtility.FromJson<SerializableJsonNoteSet>(File.ReadAllText($"Assets/Notes/noteSet{NoteSetIdx}.json"));
+        // if (true) // for testing purposes
+        // {
+        //     if (GetNoteSetRandomly)
+        //     {
+        //         NoteSetIdx = Random.Range(0, 3);
+        //     }
+        //     noteSet = JsonUtility.FromJson<SerializableJsonNoteSet>(File.ReadAllText($"Assets/Notes/noteSet{0}.json"));
+        // }
+        if (SceneManager.GetActiveScene().buildIndex == 2){
+            noteSet = JsonUtility.FromJson<SerializableJsonNoteSet>(File.ReadAllText($"Assets/Notes/noteSet{0}.json"));
         }
-
+        if (SceneManager.GetActiveScene().buildIndex == 3){
+            noteSet = JsonUtility.FromJson<SerializableJsonNoteSet>(File.ReadAllText($"Assets/Notes/noteSet{1}.json"));
+        }
     }
 
     public SerializableNote GetNote(int noteIdx)
@@ -52,7 +59,12 @@ public class GameManager : MonoBehaviour
     }
     public void NextLevel()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        if (SceneManager.GetActiveScene().buildIndex == 4){
+            SceneManager.LoadScene(0);
+        }else{
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        }
+        
     }
 
     // https://forum.unity.com/threads/fading-in-out-gui-text-with-c-solved.380822/
@@ -115,4 +127,6 @@ public class GameManager : MonoBehaviour
 
         }
     }
+
+ 
 }

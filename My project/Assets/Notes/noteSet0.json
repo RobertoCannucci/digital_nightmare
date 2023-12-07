@@ -2,21 +2,51 @@
   "set": [
     {
       "noteIdx": 0,
-      "noteText": "this is the first note",
-      "notePosX": -1.81,
-      "notePosY": 0.9,
-      "notePosZ": 2.85,
-      "noteRotX": -90,
+      "noteText": "The first digit is 3",
+      "notePosX": 22.118,
+      "notePosY": 2.564,
+      "notePosZ": -54.274,
+      "noteRotX": 2.393,
       "noteRotY": 0,
       "noteRotZ": 0
     },
     {
       "noteIdx": 1,
-      "noteText": "this is the second note",
-      "notePosX": -1.95,
-      "notePosY": 2.8,
-      "notePosZ": 4,
-      "noteRotX": -35,
+      "noteText": "The second digit is 3",
+      "notePosX": 14.192,
+      "notePosY": 2.511,
+      "notePosZ": 10.722,
+      "noteRotX": 2.393,
+      "noteRotY": 0,
+      "noteRotZ": 0
+    },
+    {
+      "noteIdx": 2,
+      "noteText": "The third digit is 9",
+      "notePosX": 17.731,
+      "notePosY": 2.254,
+      "notePosZ": -93.121,
+      "noteRotX": 2.393,
+      "noteRotY": 0,
+      "noteRotZ": 0
+    },
+    {
+      "noteIdx": 3,
+      "noteText": "The fourth digit is 9",
+      "notePosX": 32.02,
+      "notePosY": 2.89,
+      "notePosZ": -108.28,
+      "noteRotX": 2.393,
+      "noteRotY": 0,
+      "noteRotZ": 0
+    },
+    {
+      "noteIdx": 4,
+      "noteText": "The fifth digit is 2",
+      "notePosX": 26.48,
+      "notePosY": 2.78,
+      "notePosZ": -141.63,
+      "noteRotX": 2.393,
       "noteRotY": 0,
       "noteRotZ": 0
     }

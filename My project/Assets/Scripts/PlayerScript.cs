@@ -12,6 +12,8 @@ public class PlayerScript : MonoBehaviour
 
     public int BatteryInventory = 0;
     private bool Flashbanging = false;
+    public bool UVMode = false;
+    public bool UVUnlocked = false;
 
     public GameObject leftHandIK;
     public GameObject leftHandObj;
@@ -48,9 +50,11 @@ public class PlayerScript : MonoBehaviour
     private Vector3 movement;
     void Start()
     {
+        
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         rightHandInventory.Add(null);
+ 
     }
 
     void Update()
@@ -101,6 +105,34 @@ public class PlayerScript : MonoBehaviour
                             StartCoroutine(GameManager.Instance.DisplayText("Object is too far"));
                         }
                     }
+                    if (hit.collider.tag == "door"){
+                        if (hit.collider.gameObject.GetComponent<DoorScript>().opening == false){
+                            hit.collider.gameObject.GetComponent<DoorScript>().opening = true;
+                        }else{
+                            hit.collider.gameObject.GetComponent<DoorScript>().opening = false;
+                        }
+                    }
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.C) && UVUnlocked && rightHandObj.tag.Contains("FlashLight"))
+            {
+                UVMode = !UVMode;
+                Light LightComponent = null;
+                if (UVMode)
+                {
+                    rightHandObj.transform.GetChild(0).gameObject.SetActive(false);
+                    rightHandObj.transform.GetChild(2).gameObject.SetActive(true);
+                    LightComponent = rightHandObj.transform.GetChild(2).GetComponent<Light>();
+                }
+                else
+                {
+                    rightHandObj.transform.GetChild(0).gameObject.SetActive(true);
+                    rightHandObj.transform.GetChild(2).gameObject.SetActive(false);
+                    LightComponent = rightHandObj.transform.GetChild(0).GetComponent<Light>();
+                }
+                if (LightComponent.intensity == 0)
+                {
+                    ToggleFlashLight();
                 }
             }
             if (Input.GetKeyDown(KeyCode.G) && !Flashbanging)
@@ -286,7 +318,15 @@ public class PlayerScript : MonoBehaviour
     }
     public void ToggleFlashLight()
     {
-        Light LightComponent = rightHandObj.transform.GetChild(0).GetComponent<Light>();
+        Light LightComponent = null;
+        if (UVMode)
+        {
+            LightComponent = rightHandObj.transform.GetChild(2).GetComponent<Light>();
+        }
+        else
+        {
+            LightComponent = rightHandObj.transform.GetChild(0).GetComponent<Light>();
+        }
         if (LightComponent.intensity == 0)
         {
             LightComponent.intensity = 2.7f;
