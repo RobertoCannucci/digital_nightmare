@@ -6,6 +6,7 @@ using UnityEngine.Experimental.GlobalIllumination;
 
 public class PlayerScript : MonoBehaviour
 {
+    public static PlayerScript Instance { get; private set; }
     public List<string> collectedNotes;
 
     private float pickUpRange = 3.75f;
@@ -50,7 +51,15 @@ public class PlayerScript : MonoBehaviour
     private Vector3 movement;
     void Start()
     {
-        
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(Instance);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
         rightHandInventory.Add(null);
@@ -150,7 +159,7 @@ public class PlayerScript : MonoBehaviour
             }
             if (Input.GetKeyDown(KeyCode.Mouse1) && !Flashbanging)
             {
-                if (rightHandObj != null && rightHandObj.tag.Contains("PickUpRightHandFlashLight"))
+                if (rightHandObj != null && rightHandObj.tag.Contains("FlashLight"))
                 {
                     if (BatteryInventory > 0)
                     {
@@ -210,6 +219,11 @@ public class PlayerScript : MonoBehaviour
         rightHandObj.transform.GetChild(0).GetComponent<Light>().intensity = 0;
         rightHandObj.transform.GetChild(1).GetComponent<Light>().intensity = 4.5f;
         Flashbanging = true;
+        if (UVUnlocked)
+        {
+            UVMode = false;
+            rightHandObj.transform.GetChild(2).gameObject.SetActive(false);
+        }
 
         GameObject monster = GameObject.FindGameObjectWithTag("Monster");
         // 1) Find Vector from monster to player

@@ -30,7 +30,7 @@ public class PickUpItemScript : MonoBehaviour
                     ps.UVUnlocked = true;
                     for (var i = 0; i < ps.rightHandInventory.Count; i++)
                     {
-                        if (ps.rightHandInventory[i].tag.Contains("FlashLight"))
+                        if (ps.rightHandInventory[i] != null && ps.rightHandInventory[i].tag.Contains("FlashLight"))
                         {
                             ps.rightHandInventory.RemoveAt(i);
                         }

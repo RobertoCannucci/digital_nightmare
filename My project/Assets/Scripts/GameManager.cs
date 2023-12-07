@@ -13,14 +13,17 @@ public class GameManager : MonoBehaviour
     public Text displayTextUI;
     public bool isGamePaused = false;
     public Canvas pauseMenu;
-    private PlayerScript ps;
+    public PlayerScript ps;
     public RawImage[] batteriesUI;
 
 
     private void Awake()
     {
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.Locked;
+        if (SceneManager.GetActiveScene().buildIndex != 0)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
         if (Instance == null)
         {
             Instance = this;
