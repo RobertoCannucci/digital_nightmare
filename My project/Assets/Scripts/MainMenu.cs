@@ -18,14 +18,12 @@ public class MainMenu : MonoBehaviour
 
     public void RestartGame()
     {
-        Scene currentScene = SceneManager.GetActiveScene();
-
-        SceneManager.LoadScene(currentScene.name);
+        SceneManager.LoadScene("Level1");
     }
 
     public void BTM()
     {
-        SceneManager.LoadScene("Level1");
+        SceneManager.LoadScene("Main Menu");
 
     }
 
