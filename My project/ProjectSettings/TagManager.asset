@@ -17,6 +17,7 @@ TagManager:
   - PickUpInventoryBattery
   - PickUpRightHandUVFlashLight
   - door
+  - PauseMenu
   layers:
   - Default
   - TransparentFX

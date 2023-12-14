@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        pauseMenu = GameObject.FindGameObjectWithTag("PauseMenu").GetComponent<Canvas>();
         if (SceneManager.GetActiveScene().buildIndex != 0)
         {
             Cursor.visible = true;
@@ -88,7 +89,8 @@ public class GameManager : MonoBehaviour
         {
             Time.timeScale = 1f;
             AudioListener.pause = false;
-            pauseMenu.gameObject.SetActive(false);
+            pauseMenu.GetComponent<Canvas>().enabled = false;
+            //pauseMenu.gameObject.SetActive(false);
             if (ps.hoveringObj == null)
             {
                 Camera.main.GetComponent<CameraRotation>().lockedCamera = false;
@@ -99,7 +101,9 @@ public class GameManager : MonoBehaviour
         {
             Time.timeScale = 0f;
             AudioListener.pause = true;
-            pauseMenu.gameObject.SetActive(true);
+            //pauseMenu.gameObject.SetActive(true);
+            pauseMenu.GetComponent<Canvas>().enabled = true;
+            pauseMenu.GetComponent<PauseMenuManager>().UpdatePages();
             Camera.main.GetComponent<CameraRotation>().lockedCamera = true;
             Cursor.visible = true;
         }
@@ -131,5 +135,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
- 
+    public void GoToMainMenu()
+    {
+        SceneManager.LoadScene(0);
+        Destroy(ps.gameObject);
+    }
 }
