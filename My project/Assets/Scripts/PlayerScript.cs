@@ -475,4 +475,9 @@ public class PlayerScript : MonoBehaviour
             }
         }
     }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("You collided");
+    }
 }
