@@ -18,6 +18,7 @@ TagManager:
   - PickUpRightHandUVFlashLight
   - door
   - PauseMenu
+  - Keypad
   layers:
   - Default
   - TransparentFX

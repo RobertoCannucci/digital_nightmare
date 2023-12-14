@@ -9,7 +9,7 @@ public class PlayerScript : MonoBehaviour
     public static PlayerScript Instance { get; private set; }
     public List<string> collectedNotes;
 
-    private float pickUpRange = 3.75f;
+    public float pickUpRange = 3.75f;
 
     public int BatteryInventory = 0;
     private bool Flashbanging = false;
@@ -96,6 +96,7 @@ public class PlayerScript : MonoBehaviour
         }
         else if (!GameManager.Instance.isGamePaused)
         {
+            GameManager.Instance.DisplayInteractHint();
             if (Input.GetKeyDown(KeyCode.F) && !(Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.E)))
             {
                 RaycastHit hit;

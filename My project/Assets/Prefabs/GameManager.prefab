@@ -24,13 +24,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7383996768328866313}
+  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1.4075998, y: 5.924327, z: 2.513521}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7383996768328866314
 MonoBehaviour:
@@ -44,11 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28aa9e0935aee1742b2aa4fb884a76bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GetNoteSetRandomly: 1
+  GetNoteSetRandomly: 0
   NoteSetIdx: 0
   displayTextUI: {fileID: 0}
   isGamePaused: 0
   pauseMenu: {fileID: 0}
+  ps: {fileID: 0}
   batteriesUI:
   - {fileID: 0}
   - {fileID: 0}
