@@ -18,7 +18,7 @@ public class PauseMenuManager : MonoBehaviour
     public TextMeshProUGUI page2Text;
     public GameObject controlsPage;
     public GameObject notesPage;
-    private int currentPageIdx = 0;
+    public int currentPageIdx = 0;
     void Start()
     {
         previousPageBtn.GetComponent<Button>().onClick.AddListener(PreviousPage);
@@ -38,6 +38,7 @@ public class PauseMenuManager : MonoBehaviour
     }
     public void NextPage()
     {
+        Debug.Log("clicked");
         if ((currentPageIdx + 1) * 2 < GameManager.Instance.ps.collectedNotes.Count)
         {
             currentPageIdx++;

@@ -592,10 +592,10 @@ RectTransform:
   m_Children:
   - {fileID: 6567664908626781698}
   - {fileID: 3871817943388559306}
-  - {fileID: 2162665849390687432}
-  - {fileID: 3346055230125329219}
   - {fileID: 7833507857851405785}
   - {fileID: 1940461891427758754}
+  - {fileID: 3346055230125329219}
+  - {fileID: 2162665849390687432}
   m_Father: {fileID: 1509327524813213315}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -2157,8 +2157,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 187.5, y: 0}
-  m_SizeDelta: {x: -574.9414, y: 0}
+  m_AnchoredPosition: {x: 188.42764, y: 0}
+  m_SizeDelta: {x: 10.698, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5830018138416829672
 CanvasRenderer:
@@ -2409,6 +2409,7 @@ MonoBehaviour:
   page2Text: {fileID: 209091510472088450}
   controlsPage: {fileID: 4175099175251879337}
   notesPage: {fileID: 2520747613494686266}
+  currentPageIdx: 0
 --- !u!1 &8595379639613564991
 GameObject:
   m_ObjectHideFlags: 0

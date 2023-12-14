@@ -12,7 +12,7 @@ namespace NavKeypad
         {
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetKeyDown(KeyCode.F))
             {
                 if (Physics.Raycast(ray, out var hit))
                 {
