@@ -10,7 +10,7 @@ namespace NavKeypad
         private void Awake() => cam = Camera.main;
         private void Update()
         {
-            Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
 
             if (Input.GetKeyDown(KeyCode.F))
             {

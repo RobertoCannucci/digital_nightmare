@@ -70,15 +70,6 @@ public class PlayerScript : MonoBehaviour
 
     void Update()
     {
-        if (!setPos)
-        {
-            if (SceneManager.GetActiveScene().buildIndex == 2)
-            {
-                transform.position = new Vector3(-0.15f, 1.87f, 3.29f);
-            }
-            setPos = true;
-            Debug.Log("set pos player script");
-        }
         Cursor.lockState = CursorLockMode.Confined;
         ProcessInput();
         if (!GameManager.Instance.isGamePaused && hoveringObj == null)
@@ -111,9 +102,10 @@ public class PlayerScript : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.F) && !(Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.E)))
             {
                 RaycastHit hit;
-                Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+                Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
                 if (Physics.Raycast(ray, out hit))
                 {
+                    Debug.Log(hit.collider.name);
                     if (hit.collider.tag.Contains("PickUp"))
                     {
                         Vector3 playerPosToObjectPos = hit.transform.position - transform.position;

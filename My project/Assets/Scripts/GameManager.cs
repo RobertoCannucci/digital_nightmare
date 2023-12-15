@@ -69,11 +69,13 @@ public class GameManager : MonoBehaviour
             {
                 Destroy(Instance.ps.gameObject);
             }
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.Confined;
         }
         if (SceneManager.GetActiveScene().buildIndex == 2)
         {
             Debug.Log("setting pos");
-            Instance.ps.gameObject.transform.position = new Vector3(-0.15f, 1.87f, 3.29f);
+            //PlayerScript.Instance.gameObject.transform.position = new Vector3(-0.15f, 1.87f, 3.29f);
             noteSet = JsonUtility.FromJson<SerializableJsonNoteSet>(File.ReadAllText($"Assets/Notes/noteSet0.json"));
         }
         if (SceneManager.GetActiveScene().buildIndex == 3)
@@ -111,7 +113,7 @@ public class GameManager : MonoBehaviour
         displayTextUI.text = textToDisplay;
         displayTextUI.color = new Color(displayTextUI.color.r, displayTextUI.color.g, displayTextUI.color.b, 1);
         System.Threading.Thread.Sleep(100);
-        while (displayTextUI.color.a > 0.0f)
+        while (displayTextUI.color.a > 0.0f && displayingText)
         {
             displayTextUI.color = new Color(displayTextUI.color.r, displayTextUI.color.g, displayTextUI.color.b, displayTextUI.color.a - (Time.deltaTime / 2.5f));
             yield return null;
@@ -121,7 +123,7 @@ public class GameManager : MonoBehaviour
     public void DisplayInteractHint()
     {
         RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
+        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         if (!displayingText)
         {
             Debug.DrawRay(ray.origin, ray.direction);

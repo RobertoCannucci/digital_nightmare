@@ -48,7 +48,7 @@ public class Tutorial : MonoBehaviour
 
         if(other.tag == "Player" && gameObject.tag == "EndLevel") {
             GameManager.Instance.NextLevel();
-            GameManager.Instance.ps.gameObject.transform.position = new Vector3(-0.15f, 1.87f, 3.29f);
+            //PlayerScript.Instance.transform.position = new Vector3(-0.15f, 1.87f, 3.29f);
         }
     }
 }
