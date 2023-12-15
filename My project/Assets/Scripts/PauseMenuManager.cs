@@ -38,7 +38,6 @@ public class PauseMenuManager : MonoBehaviour
     }
     public void NextPage()
     {
-        Debug.Log("clicked");
         if ((currentPageIdx + 1) * 2 < GameManager.Instance.ps.collectedNotes.Count)
         {
             currentPageIdx++;

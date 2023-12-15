@@ -22,7 +22,7 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        pauseMenu = GameObject.FindGameObjectWithTag("PauseMenu").GetComponent<Canvas>();
+        SceneManager.sceneLoaded += OnSceneLoaded;
         if (SceneManager.GetActiveScene().buildIndex != 0)
         {
             Cursor.visible = true;
@@ -32,7 +32,6 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(Instance);
-            ps = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
         }
         else
         {
@@ -48,9 +47,20 @@ public class GameManager : MonoBehaviour
         //     }
         //     noteSet = JsonUtility.FromJson<SerializableJsonNoteSet>(File.ReadAllText($"Assets/Notes/noteSet{0}.json"));
         // }
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (SceneManager.GetActiveScene().buildIndex != 0 && SceneManager.GetActiveScene().buildIndex != 5)
+        {
+            Instance.displayTextUI = GameObject.FindGameObjectWithTag("DisplayText").GetComponent<Text>();
+            Instance.pauseMenu = GameObject.FindGameObjectWithTag("PauseMenu").GetComponent<Canvas>();
+            Instance.ps = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
+        }
         if (SceneManager.GetActiveScene().buildIndex == 2)
         {
             noteSet = JsonUtility.FromJson<SerializableJsonNoteSet>(File.ReadAllText($"Assets/Notes/noteSet0.json"));
+            Instance.ps.gameObject.transform.position = new Vector3(-0.15f, 1.37f, 3.29f);
         }
         if (SceneManager.GetActiveScene().buildIndex == 3)
         {
@@ -146,7 +156,10 @@ public class GameManager : MonoBehaviour
             {
                 Camera.main.GetComponent<CameraRotation>().lockedCamera = false;
             }
-            Cursor.visible = false;
+            if (SceneManager.GetActiveScene().buildIndex != 0 && SceneManager.GetActiveScene().buildIndex == 5)
+            {
+                Cursor.visible = false;
+            }
         }
         else
         {
@@ -188,6 +201,7 @@ public class GameManager : MonoBehaviour
 
     public void GoToMainMenu()
     {
+        Instance.TogglePauseGame();
         SceneManager.LoadScene(0);
         Destroy(ps.gameObject);
     }

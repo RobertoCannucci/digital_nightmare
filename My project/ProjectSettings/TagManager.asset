@@ -19,6 +19,15 @@ TagManager:
   - door
   - PauseMenu
   - Keypad
+  - BottleTutorial
+  - LeaningTutorial
+  - WalkingTutorial
+  - EndLevel
+  - ThrowTutorial
+  - DropTutorial
+  - DoorTutorial
+  - RunningTutorial
+  - AudioManager
   layers:
   - Default
   - TransparentFX

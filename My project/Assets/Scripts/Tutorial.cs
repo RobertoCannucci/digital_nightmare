@@ -47,6 +47,7 @@ public class Tutorial : MonoBehaviour
         }
 
         if(other.tag == "Player" && gameObject.tag == "EndLevel") {
+            other.transform.position = new Vector3(-0.15f, 1.37f, 3.29f);
             GameManager.Instance.NextLevel();
         }
     }
