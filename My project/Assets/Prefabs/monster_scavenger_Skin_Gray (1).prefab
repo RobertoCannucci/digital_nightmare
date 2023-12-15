@@ -358,7 +358,7 @@ GameObject:
   - component: {fileID: 1521091781101088562}
   m_Layer: 0
   m_Name: monster_scavenger_Skin_Gray (1)
-  m_TagString: Untagged
+  m_TagString: Monster
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -483,6 +483,8 @@ MonoBehaviour:
   raycastLayer:
     serializedVersion: 2
     m_Bits: 0
+  bottle: {fileID: 0}
+  stunned: 0
 --- !u!1 &1704115171373743894
 GameObject:
   m_ObjectHideFlags: 0

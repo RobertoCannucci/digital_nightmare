@@ -438,7 +438,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f29832368ababde4e9bf82dc08315450, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  musicSource: {fileID: 0}
+  musicSource: {fileID: 1359303137}
   background: {fileID: 8300000, guid: ab8842b42fcaba04193bd8bc50c78cbf, type: 3}
 --- !u!1 &421596814
 GameObject:

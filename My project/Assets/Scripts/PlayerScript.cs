@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -49,6 +50,7 @@ public class PlayerScript : MonoBehaviour
     private float runSpeed = 8;
     private Animator animator;
     private Vector3 movement;
+    private bool setPos = false;
     void Start()
     {
         if (Instance == null)
@@ -68,6 +70,15 @@ public class PlayerScript : MonoBehaviour
 
     void Update()
     {
+        if (!setPos)
+        {
+            if (SceneManager.GetActiveScene().buildIndex == 2)
+            {
+                transform.position = new Vector3(-0.15f, 1.87f, 3.29f);
+            }
+            setPos = true;
+            Debug.Log("set pos player script");
+        }
         Cursor.lockState = CursorLockMode.Confined;
         ProcessInput();
         if (!GameManager.Instance.isGamePaused && hoveringObj == null)
@@ -100,7 +111,7 @@ public class PlayerScript : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.F) && !(Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.E)))
             {
                 RaycastHit hit;
-                Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+                Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
                 if (Physics.Raycast(ray, out hit))
                 {
                     if (hit.collider.tag.Contains("PickUp"))

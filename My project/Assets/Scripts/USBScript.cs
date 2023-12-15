@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class USBScript : MonoBehaviour
 {
-    private GameObject Monster;
-    private Light USBLight;
+    public GameObject Monster;
+    public Light USBLight;
     private float timer = 0f;
     private float interval = 1.5f;
     public bool pickedUp = false;

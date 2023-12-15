@@ -23,10 +23,10 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
-        if (SceneManager.GetActiveScene().buildIndex != 0)
+        if (SceneManager.GetActiveScene().buildIndex == 0 || SceneManager.GetActiveScene().buildIndex == 5 || SceneManager.GetActiveScene().buildIndex == 6)
         {
             Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.lockState = CursorLockMode.Confined;
         }
         if (Instance == null)
         {
@@ -51,16 +51,30 @@ public class GameManager : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (SceneManager.GetActiveScene().buildIndex != 0 && SceneManager.GetActiveScene().buildIndex != 5)
+        displayingText = false;
+        if (SceneManager.GetActiveScene().buildIndex != 0 && SceneManager.GetActiveScene().buildIndex != 5 && SceneManager.GetActiveScene().buildIndex != 6)
         {
             Instance.displayTextUI = GameObject.FindGameObjectWithTag("DisplayText").GetComponent<Text>();
             Instance.pauseMenu = GameObject.FindGameObjectWithTag("PauseMenu").GetComponent<Canvas>();
             Instance.ps = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
+            //Instance.ps.gameObject.transform.position = new Vector3(-0.15f, 1.87f, 3.29f);
+            USBScript usbScript = GameObject.FindGameObjectWithTag("PickUpRightHandUSB").GetComponent<USBScript>();
+            usbScript.Monster = GameObject.FindGameObjectWithTag("Monster");
+            usbScript.USBLight = GameObject.FindGameObjectWithTag("USBLight").GetComponent<Light>();
+        }
+        else
+        {
+            Debug.Log("destroying player build idx: " + SceneManager.GetActiveScene().buildIndex);
+            if (Instance.ps != null)
+            {
+                Destroy(Instance.ps.gameObject);
+            }
         }
         if (SceneManager.GetActiveScene().buildIndex == 2)
         {
+            Debug.Log("setting pos");
+            Instance.ps.gameObject.transform.position = new Vector3(-0.15f, 1.87f, 3.29f);
             noteSet = JsonUtility.FromJson<SerializableJsonNoteSet>(File.ReadAllText($"Assets/Notes/noteSet0.json"));
-            Instance.ps.gameObject.transform.position = new Vector3(-0.15f, 1.37f, 3.29f);
         }
         if (SceneManager.GetActiveScene().buildIndex == 3)
         {
@@ -80,11 +94,12 @@ public class GameManager : MonoBehaviour
     {
         if (SceneManager.GetActiveScene().buildIndex == 4)
         {
-            SceneManager.LoadScene(0);
+            SceneManager.LoadScene(6);
         }
         else
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            Instance.ps.gameObject.transform.position = new Vector3(-0.15f, 1.87f, 3.29f);
         }
 
     }
@@ -106,7 +121,7 @@ public class GameManager : MonoBehaviour
     public void DisplayInteractHint()
     {
         RaycastHit hit;
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+        Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, Screen.height / 2, 0));
         if (!displayingText)
         {
             Debug.DrawRay(ray.origin, ray.direction);
@@ -201,8 +216,10 @@ public class GameManager : MonoBehaviour
 
     public void GoToMainMenu()
     {
-        Instance.TogglePauseGame();
+        if (isGamePaused)
+        {
+            Instance.TogglePauseGame();
+        }
         SceneManager.LoadScene(0);
-        Destroy(ps.gameObject);
     }
 }
