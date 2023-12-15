@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
         displayingText = true;
         displayTextUI.text = textToDisplay;
         displayTextUI.color = new Color(displayTextUI.color.r, displayTextUI.color.g, displayTextUI.color.b, 1);
-        System.Threading.Thread.Sleep(200);
+        System.Threading.Thread.Sleep(100);
         while (displayTextUI.color.a > 0.0f)
         {
             displayTextUI.color = new Color(displayTextUI.color.r, displayTextUI.color.g, displayTextUI.color.b, displayTextUI.color.a - (Time.deltaTime / 2.5f));
