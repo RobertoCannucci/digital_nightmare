@@ -251,6 +251,10 @@ public class PlayerScript : MonoBehaviour
                     // If ray hits player
                     if (hit.collider.tag == "Monster")
                     {
+                        GameObject enemyObject = GameObject.FindGameObjectWithTag("Monster");
+                        EnemyScript enemy = enemyObject.GetComponent<EnemyScript>();
+                        enemy.stunned = true;
+
                         // hit.GetComponent<MonsterScript>().GetStunned();
                         Debug.Log("stunned monster");
                     }

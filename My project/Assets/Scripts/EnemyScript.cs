@@ -16,45 +16,64 @@ public class EnemyScript : MonoBehaviour
     private int destPoint = 0;
     private Animator animator;
     public LayerMask raycastLayer;
-    
+
+    public GameObject bottle;
+    public bool stunned;
+
     // Start is called before the first frame update
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         player = GameObject.FindWithTag("Player");
+        bottle = GameObject.FindWithTag("PickUpLeftHandMetalBottle");
         GotoNextPoint();
     }
 
-    
     // Update is called once per frame
     void Update()
     {
-        animator.SetFloat("Speed", agent.velocity.magnitude);
-        if (SeePlayer())
+        if (stunned)
         {
-            //animator.SetBool("Scream", false);
-            agent.destination = player.transform.position;
-            agent.speed = 3.0f;
-            timer = 1.0f;
+            animator.SetBool("Stunned", true);
+            StopMovement();
+            Invoke("ResumeMovement", 4.0f);
+            stunned = false;
+            animator.SetBool("Stunned", false);
         }
-        else //Patrol
+        else
         {
+            animator.SetFloat("Speed", agent.velocity.magnitude);
 
-            if (HasReachedDestination())
+            if (SeePlayer())
             {
-                //animator.SetBool("Scream", true);
-                timer -= Time.deltaTime;
-                if (timer <= 0.0f)
-                {
-                    //animator.SetBool("Scream", false);
-                    GotoNextPoint();
-                    timer = 0.1f;
-                }
+                //animator.SetBool("Scream", false);
+                agent.destination = player.transform.position;
+                agent.speed = 5.0f;
+                timer = 1.0f;
             }
+            else if (SeeMetalBottle())
+            {
+                agent.destination = bottle.transform.position;
+                agent.speed = 2.0f;
+                timer = 1.0f;
+            }
+            else //Patrol
+            {
+                if (HasReachedDestination())
+                {
+                    //animator.SetBool("Scream", true);
+                    timer -= Time.deltaTime;
+                    if (timer <= 0.0f)
+                    {
+                        //animator.SetBool("Scream", false);
+                        GotoNextPoint();
+                        timer = 0.1f;
+                    }
+                }
 
+            }
         }
-
     }
 
     void GotoNextPoint()
@@ -70,7 +89,40 @@ public class EnemyScript : MonoBehaviour
         // cycling to the start if necessary.
         destPoint = (destPoint + 1) % points.Length;
     }
+    public void ChangeBottle()
+    {
+        bottle = null;
+    }
 
+    public bool SeeMetalBottle()
+    {
+        if (bottle == null) return false;
+        Vector3 vecBottleTurret = bottle.transform.position - transform.position;
+        if (vecBottleTurret.magnitude > maxDistance)
+        {
+            return false;
+        }
+        Vector3 normVecBottleTurret = Vector3.Normalize(vecBottleTurret);
+        float dotProduct = Vector3.Dot(transform.forward, normVecBottleTurret);
+        var angle = Mathf.Acos(dotProduct);
+        float deg = angle * Mathf.Rad2Deg;
+        if (deg < maxAngle)
+        {
+            RaycastHit hit;
+            Ray ray = new Ray(transform.position, vecBottleTurret);
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                Debug.Log(hit.collider.name);
+                if (hit.collider.tag == "PickUpLeftHandMetalBottle")
+                {
+                    Invoke("ChangeBottle", 5.0f);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     public bool SeePlayer()
     {
@@ -88,7 +140,7 @@ public class EnemyScript : MonoBehaviour
         {
             RaycastHit hit;
             Ray ray = new Ray(transform.position, vecPlayerTurret);
-           
+
             if (Physics.Raycast(ray, out hit))
             {
                 Debug.Log(hit.collider.name);
@@ -135,12 +187,13 @@ public class EnemyScript : MonoBehaviour
     public void ResumeMovement()
     {
         agent.isStopped = false; // was agent.Stop();
+        agent.speed = 2;
     }
     public void HitPlayer()
     {
-       /**if (isPlayerInAttackRange)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-        }*/
+        /**if (isPlayerInAttackRange)
+         {
+             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+         }*/
     }
 }
