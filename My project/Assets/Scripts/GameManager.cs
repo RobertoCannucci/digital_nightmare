@@ -58,9 +58,9 @@ public class GameManager : MonoBehaviour
             Instance.pauseMenu = GameObject.FindGameObjectWithTag("PauseMenu").GetComponent<Canvas>();
             Instance.ps = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerScript>();
             //Instance.ps.gameObject.transform.position = new Vector3(-0.15f, 1.87f, 3.29f);
-            USBScript usbScript = GameObject.FindGameObjectWithTag("PickUpRightHandUSB").GetComponent<USBScript>();
-            usbScript.Monster = GameObject.FindGameObjectWithTag("Monster");
-            usbScript.USBLight = GameObject.FindGameObjectWithTag("USBLight").GetComponent<Light>();
+            // USBScript usbScript = GameObject.FindGameObjectWithTag("PickUpRightHandUSB").GetComponent<USBScript>();
+            // usbScript.Monster = GameObject.FindGameObjectWithTag("Monster");
+            // usbScript.USBLight = GameObject.FindGameObjectWithTag("USBLight").GetComponent<Light>();
         }
         else
         {
